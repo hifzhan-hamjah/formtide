@@ -1,4 +1,15 @@
 services:
+  api:
+    build: .
+    container_name: formtide_api
+    environment:
+      PORT: 3000
+      BASE: "https://YOUR_DOMAIN"
+      DATABASE_URL: "postgresql://formbee:formbee@db:5432/formbee?schema=public"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
   db:
     image: postgres:15
     container_name: formtide_db
