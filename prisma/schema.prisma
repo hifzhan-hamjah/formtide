@@ -6,9 +6,33 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output = "../generated/prisma_client"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+model Form {
+  id         String       @id @default(cuid())
+  name       String
+  ownerEmail String?
+  manageKey  String       @unique
+  isActive   Boolean      @default(true)
+  createdAt  DateTime     @default(now())
+
+  submissions Submission[]
+}
+
+model Submission {
+  id        String   @id @default(cuid())
+  formId    String
+  payload   Json
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  @@index([formId, createdAt])
 }
