@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:15
+    container_name: formtide_db
+    environment:
+      POSTGRES_USER: formtide
+      POSTGRES_PASSWORD: formtide
+      POSTGRES_DB: formtide
+    ports:
+      - "5432:5432"
+    volumes:
+      - formtide_pg:/var/lib/postgresql/data
+
+volumes:
+  formtide_pg:
