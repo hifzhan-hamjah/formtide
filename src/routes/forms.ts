@@ -13,9 +13,8 @@ const createFormSchema = z.object({
 formsRouter.post("/", async (req, res) => {
   const parsed = createFormSchema.safeParse(req.body);
   if (!parsed.success) {
-    return res
-      .status(400)
-      .json({ error: "Invalid input", details: parsed.error.flatten() });
+    const details = z.flattenError(parsed.error);
+    return res.status(400).json({ error: "Invalid input", details: details });
   }
 
   const manageKey = crypto.randomBytes(24).toString("hex");
