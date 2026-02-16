@@ -2,9 +2,8 @@ import express from "express";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
 import "dotenv/config";
-
-import { formsRouter } from "./routes/forms";
-import { submissionsRouter } from "./routes/submissions";
+import { formsRouter } from "./features/forms/form.route";
+import { submissionsRouter } from "./features/submission/submission.route";
 
 export function createApp() {
   const app = express();
@@ -18,7 +17,7 @@ export function createApp() {
       max: 30,
       standardHeaders: true,
       legacyHeaders: false,
-    })
+    }),
   );
 
   app.get("/health", (_req, res) => res.json({ ok: true }));
