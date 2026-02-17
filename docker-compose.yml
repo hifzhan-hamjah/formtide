@@ -21,7 +21,7 @@ services:
     restart: unless-stopped
     environment:
       PORT: ${PORT}
-      BASE: ${BASE}
+      BASE: ${BASE_URL}
       DATABASE_URL: ${DATABASE_URL}
       NODE_ENV: production
     ports:
