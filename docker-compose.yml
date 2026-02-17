@@ -1,26 +1,39 @@
 services:
-  api:
-    build: .
-    container_name: formtide_api
-    environment:
-      PORT: 3000
-      BASE: "https://YOUR_DOMAIN"
-      DATABASE_URL: "postgresql://formbee:formbee@db:5432/formbee?schema=public"
-    ports:
-      - "3000:3000"
-    depends_on:
-      - db
   db:
     image: postgres:15
     container_name: formtide_db
+    restart: unless-stopped
     environment:
-      POSTGRES_USER: formtide
-      POSTGRES_PASSWORD: formtide
-      POSTGRES_DB: formtide
-    ports:
-      - "5432:5432"
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - formtide_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    container_name: formtide_api
+    restart: unless-stopped
+    environment:
+      PORT: ${PORT}
+      BASE: ${BASE}
+      DATABASE_URL: ${DATABASE_URL}
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  logging:
+    options:
+      max-size: "10m"
+      max-file: "3"
 
 volumes:
   formtide_pg:
